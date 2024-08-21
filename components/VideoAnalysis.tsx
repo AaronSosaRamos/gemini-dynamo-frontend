@@ -1,8 +1,15 @@
+import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { videoAnalysisSchema, VideoAnalysisFormData } from '../schemas/validationSchema';
+import api from '../lib/axiosConfig';
+import { toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
 export default function VideoAnalysisForm() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [result, setResult] = useState<any>(null);
+
     const {
         register,
         handleSubmit,
@@ -11,8 +18,19 @@ export default function VideoAnalysisForm() {
         resolver: zodResolver(videoAnalysisSchema),
     });
 
-    const onSubmit = (data: VideoAnalysisFormData) => {
-        console.log(data);
+    const onSubmit = async (data: VideoAnalysisFormData) => {
+        setIsLoading(true);
+        setResult(null);
+        try {
+            const response = await api.post('/retrieve-key-concepts', data);
+            setResult(response.data);
+            toast.success('Key concepts retrieved successfully!');
+        } catch (error) {
+            toast.error('Failed to retrieve key concepts.');
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -121,6 +139,12 @@ export default function VideoAnalysisForm() {
                         Submit Request
                     </button>
                 </form>
+
+                <div className="mt-6">
+                    <Suspense fallback={<Spinner />}>
+                        {isLoading ? <Spinner /> : result && <pre>{JSON.stringify(result, null, 2)}</pre>}
+                    </Suspense>
+                </div>
             </div>
         </div>
     );
