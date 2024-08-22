@@ -1,13 +1,72 @@
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { videoAnalysisSchema, VideoAnalysisFormData } from '../schemas/validationSchema';
-import api from '../lib/axiosConfig';
-import { toast } from 'react-toastify';
-import Spinner from '../components/Spinner';
 import ResultsList from '../components/ResultsList';
+import Spinner from '../components/Spinner';
 
-export default function VideoAnalysisForm() {
+const mockData = [
+  {
+    concept: "Amazon CloudFront",
+    definition: "Un servicio de red de entrega de contenido (CDN) que ofrece una entrega rápida y confiable de contenido estático, como archivos HTML, CSS, JavaScript e imágenes.",
+    examples: [
+      "Entregar contenido web desde ubicaciones globales para reducir la latencia.",
+      "Optimizar el rendimiento de aplicaciones web al almacenar en caché contenido estático en la red de CloudFront."
+    ],
+    related_topics: [
+      "CDN",
+      "Entrega de contenido",
+      "Optimización de rendimiento",
+      "Latencia"
+    ],
+    difficulty_level: "Beginner",
+    learning_methodology: "Spaced Repetition",
+    practical_applications: [
+      "Mejorar el tiempo de carga de sitios web",
+      "Reducir los costos de ancho de banda",
+      "Mejorar la disponibilidad de sitios web",
+      "Proteger los sitios web contra ataques DDoS"
+    ],
+    study_tips: [
+      "Entender cómo funciona el almacenamiento en caché en CloudFront.",
+      "Investigar las diferentes opciones de configuración de CloudFront.",
+      "Experimentar con CloudFront para optimizar el rendimiento de sus sitios web."
+    ],
+    revision_frequency: "Weekly"
+  },
+  {
+    concept: "Amazon S3",
+    definition: "Un servicio de almacenamiento de objetos que ofrece almacenamiento duradero, escalable y de bajo costo para una amplia variedad de datos.",
+    examples: [
+      "Almacenar archivos de respaldo de datos",
+      "Almacenar archivos multimedia para sitios web",
+      "Almacenar datos de aplicaciones",
+      "Almacenar archivos de registro"
+    ],
+    related_topics: [
+      "Almacenamiento de objetos",
+      "Almacenamiento en la nube",
+      "Escalabilidad",
+      "Durabilidad"
+    ],
+    difficulty_level: "Beginner",
+    learning_methodology: "Spaced Repetition",
+    practical_applications: [
+      "Almacenamiento de archivos de respaldo",
+      "Hosting de sitios web estáticos",
+      "Almacenamiento de datos de aplicaciones",
+      "Análisis de datos"
+    ],
+    study_tips: [
+      "Entender los diferentes tipos de almacenamiento de S3.",
+      "Investigar las opciones de configuración de seguridad de S3.",
+      "Experimentar con S3 para almacenar diferentes tipos de datos."
+    ],
+    revision_frequency: "Weekly"
+  },
+];
+
+export default function MockedVideoAnalysisForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<any>(null);
 
@@ -22,19 +81,10 @@ export default function VideoAnalysisForm() {
     const onSubmit = async (data: VideoAnalysisFormData) => {
         setIsLoading(true);
         setResult(null);
-        try {
-            const response = await api.post('/retrieve-key-concepts', data);
-
-            const resultData = Array.isArray(response.data) ? response.data : [response.data];
-            
-            setResult(resultData);
-            toast.success('Key concepts retrieved successfully!');
-        } catch (error) {
-            toast.error('Failed to retrieve key concepts.');
-            console.error(error);
-        } finally {
+        setTimeout(() => {
+            setResult(mockData);
             setIsLoading(false);
-        }
+        }, 2000);
     };
 
     return (
@@ -146,9 +196,7 @@ export default function VideoAnalysisForm() {
             </div>
 
             <div className="mt-6 w-full max-w-4xl">
-                <Suspense fallback={<Spinner />}>
-                    {isLoading ? <Spinner /> : result && <ResultsList results={result} />}
-                </Suspense>
+                {isLoading ? <Spinner /> : result && <ResultsList results={result} />}
             </div>
         </div>
     );
