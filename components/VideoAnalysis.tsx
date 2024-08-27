@@ -41,7 +41,7 @@ export default function VideoAnalysisForm() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-8">
             <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md mb-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-                    Video Analysis Request
+                    Gemini Dynamo - Key Concept Retriever
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-4">
