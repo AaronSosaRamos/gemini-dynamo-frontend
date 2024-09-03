@@ -7,7 +7,7 @@ import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 
 const navigation = [
     { name: "Home", href: "/" },
-    { name: "Features", href: "/features" },
+    { name: "Dynamo", href: "/dynamo" },
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },

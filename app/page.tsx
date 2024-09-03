@@ -1,9 +1,9 @@
 "use client"
 
-import VideoAnalysis from "@/components/VideoAnalysis";
+import MainScreen from "@/components/MainScreen";
 
 export default function Home() {
   return (
-    <VideoAnalysis />
+    <MainScreen />
   );
 }
