@@ -36,14 +36,14 @@ export default function MainScreen() {
           onClick={handleButtonClick}
           className="flex items-center justify-center bg-indigo-600 dark:bg-indigo-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition duration-300"
         >
-          <FaRocket className="mr-3 text-2xl" /> Access the Service
+          <FaRocket className="mr-3 text-2xl" /> Concept Retriever
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300"
         >
-          <FaLightbulb className="mr-3 text-2xl" /> Concept Extraction
+          <FaLightbulb className="mr-3 text-2xl" /> Structured Data Study
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.05 }}

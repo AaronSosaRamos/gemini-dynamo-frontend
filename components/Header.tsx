@@ -7,10 +7,12 @@ import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 
 const navigation = [
     { name: "Home", href: "/" },
-    { name: "Dynamo", href: "/dynamo" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Concept Retriever", href: "/concept-retriever" },
+    { name: "Structured Data Study", href: "/structured-data-study" },
+    { name: "Semantic Analysis", href: "/semantic-analysis" },
+    { name: "Topic Clustering", href: "/topic-clustering" },
+    { name: "Relation Mapping", href: "/relation-mapping" },
+    { name: "Sentiment Analysis", href: "/sentiment-analysis" },
 ];
 
 export default function Header() {
