@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 export default function MainScreen() {
   const router = useRouter();
 
-  const handleButtonClick = () => {
-    router.push('/dynamo');
+  const handleButtonClick = (path: string) => {
+    router.push(path);
   };
 
   return (
@@ -33,7 +33,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleButtonClick}
+          onClick={() => {handleButtonClick('/concept-retriever')}}
           className="flex items-center justify-center bg-indigo-600 dark:bg-indigo-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition duration-300"
         >
           <FaRocket className="mr-3 text-2xl" /> Concept Retriever
