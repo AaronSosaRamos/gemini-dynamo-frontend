@@ -1,9 +1,9 @@
 "use client"
 
-import VideoAnalysisForm from "@/components/VideoAnalysis";
+import KeyConceptRetrieverForm from "@/components/KeyConceptRetriever";
 
-export default function Home() {
+export default function KeyConceptRetriever() {
   return (
-    <VideoAnalysisForm />
+    <KeyConceptRetrieverForm />
   );
 }
