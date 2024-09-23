@@ -41,6 +41,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {handleButtonClick('/structured-data-study')}}
           className="flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300"
         >
           <FaLightbulb className="mr-3 text-2xl" /> Structured Data Study
@@ -48,6 +49,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {handleButtonClick('/semantic-analysis')}}
           className="flex items-center justify-center bg-green-600 dark:bg-green-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-green-700 dark:hover:bg-green-600 transition duration-300"
         >
           <FaCogs className="mr-3 text-2xl" /> Semantic Analysis
@@ -55,6 +57,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {handleButtonClick('/topic-clustering')}}
           className="flex items-center justify-center bg-purple-600 dark:bg-purple-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition duration-300"
         >
           <FaLayerGroup className="mr-3 text-2xl" /> Topic Clustering
@@ -62,6 +65,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {handleButtonClick('/relation-mapping')}}
           className="flex items-center justify-center bg-red-600 dark:bg-red-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-red-700 dark:hover:bg-red-600 transition duration-300"
         >
           <FaProjectDiagram className="mr-3 text-2xl" /> Relation Mapping
@@ -69,6 +73,7 @@ export default function MainScreen() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {handleButtonClick('/sentiment-analysis')}}
           className="flex items-center justify-center bg-teal-600 dark:bg-teal-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-teal-700 dark:hover:bg-teal-600 transition duration-300"
         >
           <FaSmile className="mr-3 text-2xl" /> Sentiment Analysis
@@ -76,6 +81,7 @@ export default function MainScreen() {
       </div>
 
       <div className="flex justify-center mt-10 space-x-6">
+        <FaRocket className="text-3xl text-gray-700 dark:text-gray-300" />
         <FaLightbulb className="text-3xl text-gray-700 dark:text-gray-300" />
         <FaCogs className="text-3xl text-gray-700 dark:text-gray-300" />
         <FaLayerGroup className="text-3xl text-gray-700 dark:text-gray-300" />
