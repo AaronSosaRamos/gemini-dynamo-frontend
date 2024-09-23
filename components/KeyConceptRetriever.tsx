@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { videoAnalysisSchema, VideoAnalysisFormData } from '../schemas/validationSchema';
 import api from '../lib/axiosConfig';
 import { toast } from 'react-toastify';
-import Spinner from '../components/Spinner';
-import ResultsList from '../components/ResultsList';
+import Spinner from './Spinner';
+import ResultsList from './ResultsList';
 
-export default function VideoAnalysisForm() {
+export default function KeyConceptRetrieverForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<any>(null);
 
@@ -26,7 +26,7 @@ export default function VideoAnalysisForm() {
             const response = await api.post('/retrieve-key-concepts', data);
 
             const resultData = Array.isArray(response.data) ? response.data : [response.data];
-            
+
             setResult(resultData);
             toast.success('Key concepts retrieved successfully!');
         } catch (error) {
