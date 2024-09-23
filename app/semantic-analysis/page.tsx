@@ -3,7 +3,7 @@
 import SemanticAnalysisForm from "@/components/semantic-analysis/SemanticAnalysisForm";
 
 
-export default function StructuredDataStudy() {
+export default function SemanticAnalysis() {
   return (
     <SemanticAnalysisForm />
   );
