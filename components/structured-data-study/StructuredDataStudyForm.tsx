@@ -3,53 +3,50 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { AiOutlineFileText, AiOutlineLink, AiOutlineGlobal } from 'react-icons/ai';
-
-const ConceptList = React.lazy(() => import('./ConceptList'));
+import api from '@/lib/axiosConfig';
+import ConceptList from './ConceptList';
 
 const inputDataSchema = z.object({
   file_url: z.string().url({ message: 'Must be a valid URL 🌐' }),
   file_type: z.enum([
-    'pdf', 'csv', 'txt', 'md', 'url', 'pptx', 'docx', 'xls', 'xlsx', 'xml',
-    'gdoc', 'gsheet', 'gslide', 'gpdf', 'img', 'youtube_url'
+    'csv', 'xls', 'xlsx', 'xml', 'json'
   ], { message: 'Please select a valid file type 📂' }),
   lang: z.enum(['en', 'es', 'fr', 'de', 'it', 'zh', 'jp'], { message: 'Please select a valid language 🌍' }),
 });
 
 type InputData = z.infer<typeof inputDataSchema>;
 
-const concepts = [
-  { concept: 'Modelo de Lenguaje Grande (LLM)', definition: 'Un tipo de modelo de inteligencia artificial que procesa y genera texto...' },
-  { concept: 'Arquitectura', definition: 'Los LLMs utilizan típicamente arquitecturas de transformadores, que les permiten procesar texto en paralelo, haciendo que los modelos sean altamente eficientes en la captura de dependencias a largo plazo en el texto.' },
-  { concept: 'Datos de Entrenamiento', definition: 'Los LLMs se entrenan en vastas cantidades de datos textuales...' },
-  { concept: 'Tokenización', definition: 'Los LLMs utilizan la tokenización para descomponer el texto...' },
-  { concept: 'Procesamiento de Lenguaje Natural', definition: 'Los LLMs se utilizan en tareas como generación de texto...' },
-  { concept: 'Creación de Contenido', definition: 'Los LLMs se aprovechan para crear contenido escrito...' },
-  { concept: 'Autocompletado de Código', definition: 'Los LLMs pueden ayudar en el desarrollo de software...' },
-  { concept: 'Agentes Conversacionales', definition: 'Los LLMs son la base de chatbots avanzados...' },
-  { concept: 'Escalabilidad', definition: 'Los LLMs pueden escalarse para manejar grandes conjuntos...' },
-  { concept: 'Capacidades Multilingües', definition: 'Los LLMs entrenados en conjuntos de datos multilingües...' },
-  { concept: 'Desafíos de Entrenamiento', definition: 'Reunir conjuntos de datos diversos es un gran desafío...' },
-  { concept: 'Consideraciones Éticas', definition: 'Asegurar que los LLMs no propaguen estereotipos...' },
-];
-
 const StructuredDataStudyForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [concepts, setConcepts] = useState<{ concept: string, definition: string }[]>([]);
   const [showConceptList, setShowConceptList] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<InputData>({
     resolver: zodResolver(inputDataSchema),
   });
 
-  const onSubmit = (data: InputData) => {
+  const onSubmit = async (data: InputData) => {
+    setShowConceptList(false);
     setLoading(true);
-    toast.success('Data successfully submitted 🎉');
 
-    setTimeout(() => {
+    try {
+      const response = await api.post('/structured-data-study', data);
+
+      toast.success("Form submitted successfully! 🎉", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+      });
+
+      setConcepts(response.data.concepts);
       setLoading(false);
       setShowConceptList(true);
-    }, 2000);
+    } catch (error) {
+      toast.error('Failed to retrieve key concepts 🚫');
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,8 +80,7 @@ const StructuredDataStudyForm: React.FC = () => {
             >
               <option value="">Select file type 📁</option>
               {[
-                'pdf', 'csv', 'txt', 'md', 'url', 'pptx', 'docx', 'xls', 'xlsx', 'xml',
-                'gdoc', 'gsheet', 'gslide', 'gpdf', 'img', 'youtube_url'
+                'csv', 'xls', 'xlsx', 'xml', 'json'
               ].map((type) => (
                 <option key={type} value={type}>
                   {type}
@@ -129,9 +125,10 @@ const StructuredDataStudyForm: React.FC = () => {
           </button>
         </form>
 
-        <ToastContainer position="top-center" autoClose={3000} />
       </div>
 
+      <ToastContainer />
+      
       {showConceptList && (
         <div className="w-full max-w-5xl mt-10 mb-10">
           <h3 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">Key Concepts 🔑</h3>

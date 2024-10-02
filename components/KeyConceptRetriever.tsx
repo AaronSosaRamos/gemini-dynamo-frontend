@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { videoAnalysisSchema, VideoAnalysisFormData } from '../schemas/validationSchema';
 import api from '../lib/axiosConfig';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import Spinner from './Spinner';
 import ResultsList from './ResultsList';
 
@@ -144,6 +144,8 @@ export default function KeyConceptRetrieverForm() {
                     </button>
                 </form>
             </div>
+
+            <ToastContainer position="top-right" autoClose={5000} />
 
             <div className="mt-6 w-full max-w-4xl">
                 <Suspense fallback={<Spinner />}>
