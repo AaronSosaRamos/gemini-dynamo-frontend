@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineFileText, AiOutlineLink, AiOutlineGlobal, AiOutlineBulb } from 'react-icons/ai';
+import api from '@/lib/axiosConfig';
 
 const ClusteringResult = React.lazy(() => import('./ClusteringResult'));
 
@@ -22,101 +23,32 @@ type TopicClusteringInput = z.infer<typeof topicClusteringSchema>;
 
 const TopicClusteringForm: React.FC = () => {
   const [loading, setLoading] = useState(false); 
+  const [clusteringData, setClusteringData] = useState(null);
   const [showResults, setShowResults] = useState(false); 
   const { register, handleSubmit, formState: { errors } } = useForm<TopicClusteringInput>({
     resolver: zodResolver(topicClusteringSchema),
   });
 
-  const clusteringData = {
-    clustering_algorithm: 'K-means',
-    clusters: [
-      {
-        cluster_id: 'cluster_1',
-        central_topic: 'Applications of LLMs',
-        topics: [
-          {
-            topic_id: 'topic_1',
-            topic_name: 'Healthcare Applications',
-            keywords: ['healthcare', 'medical documentation', 'research'],
-            importance_score: 0.9,
-            description: 'Use of LLMs in healthcare for documentation and research.',
-          },
-          {
-            topic_id: 'topic_2',
-            topic_name: 'Education Applications',
-            keywords: ['education', 'intelligent tutoring systems'],
-            importance_score: 0.8,
-            description: 'Implementation of LLMs in educational tools and systems.',
-          },
-          {
-            topic_id: 'topic_3',
-            topic_name: 'Business Applications',
-            keywords: ['business', 'customer service', 'chatbots', 'virtual assistants'],
-            importance_score: 0.85,
-            description: 'Leveraging LLMs for improving customer service in businesses.',
-          },
-        ],
-      },
-      {
-        cluster_id: 'cluster_2',
-        central_topic: 'Challenges of LLMs',
-        topics: [
-          {
-            topic_id: 'topic_4',
-            topic_name: 'Bias in LLMs',
-            keywords: ['bias', 'societal prejudices', 'data'],
-            importance_score: 0.95,
-            description: 'Concerns regarding biases in LLMs due to training data.',
-          },
-          {
-            topic_id: 'topic_5',
-            topic_name: 'Computational Resources',
-            keywords: ['computational resources', 'training', 'deployment'],
-            importance_score: 0.85,
-            description: 'High resource requirements for training and deploying LLMs.',
-          },
-          {
-            topic_id: 'topic_6',
-            topic_name: 'Interpretability',
-            keywords: ['interpretability', 'trust', 'transparency'],
-            importance_score: 0.9,
-            description: 'Challenges in understanding LLM outputs and ensuring transparency.',
-          },
-        ],
-      },
-      {
-        cluster_id: 'cluster_3',
-        central_topic: 'Future of LLMs',
-        topics: [
-          {
-            topic_id: 'topic_7',
-            topic_name: 'Advancements in LLMs',
-            keywords: ['advancements', 'reducing biases', 'improving efficiency'],
-            importance_score: 0.8,
-            description: 'Future research directions aimed at enhancing LLM capabilities.',
-          },
-          {
-            topic_id: 'topic_8',
-            topic_name: 'AI-driven Innovation',
-            keywords: ['AI', 'innovation', 'applications'],
-            importance_score: 0.75,
-            description: 'The role of LLMs in driving future innovations in AI.',
-          },
-        ],
-      },
-    ],
-    metadata: { num_clusters: 3, method: 'K-means', timestamp: null },
-  };
-
-  const onSubmit = (data: TopicClusteringInput) => {
+  const onSubmit = async (data: TopicClusteringInput) => {
+    setClusteringData(null);
     setLoading(true);
-    toast.success('Form successfully submitted 🎉');
-    console.log(data);
+    
+    try {
+      const response = await api.post('/topic-clustering', data);
 
-    setTimeout(() => {
-      setLoading(false);
+      toast.success("Form submitted successfully! 🎉", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+      });
+      
+      setClusteringData(response.data); 
       setShowResults(true);
-    }, 2000);
+    } catch (error) {
+      toast.error('Failed to retrieve clustering data 🚫');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -163,7 +95,7 @@ const TopicClusteringForm: React.FC = () => {
               {...register('file_type')}
             >
               <option value="">Select file type 📁</option>
-              {[
+              {[ 
                 'pdf', 'csv', 'txt', 'md', 'url', 'pptx', 'docx', 'xls', 'xlsx', 'xml',
                 'gdoc', 'gsheet', 'gslide', 'gpdf', 'img', 'youtube_url'
               ].map((type) => (
@@ -212,10 +144,10 @@ const TopicClusteringForm: React.FC = () => {
           </button>
         </form>
 
-        <ToastContainer position="top-center" autoClose={3000} />
+        <ToastContainer />
       </div>
 
-      {showResults && (
+      {showResults && clusteringData && (
         <Suspense fallback={<div className="flex justify-center mt-8"><svg className="animate-spin h-10 w-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg></div>}>
           <ClusteringResult data={clusteringData} />
         </Suspense>
