@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { FaBrain, FaHospital, FaUniversity, FaRobot, FaSmile, FaLanguage, FaKey } from 'react-icons/fa';
-import { AiOutlineFileSearch, AiOutlineFlag } from 'react-icons/ai';
+import { FaBrain, FaSmile, FaLanguage, FaKey } from 'react-icons/fa';
+import { AiOutlineFileSearch } from 'react-icons/ai';
 
 interface ResultCardProps {
   title: string;
@@ -9,7 +9,6 @@ interface ResultCardProps {
   icon: JSX.Element;
 }
 
-// Componente reutilizable para mostrar los resultados
 const ResultCard: React.FC<ResultCardProps> = ({ title, value, icon }) => (
   <motion.div
     className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg mb-4 flex items-center space-x-4"
@@ -38,7 +37,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ data }) => {
     language,
     confidence,
     summary,
-  } = data;
+  } = data || {};  
 
   return (
     <motion.div
@@ -53,25 +52,25 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ data }) => {
       
       <ResultCard
         title="Original Text"
-        value={input_text}
+        value={input_text ?? 'No data available'}
         icon={<AiOutlineFileSearch />}
       />
 
       <ResultCard
         title="Summary"
-        value={summary}
+        value={summary ?? 'No summary available'}
         icon={<AiOutlineFileSearch />}
       />
       
       <ResultCard
         title="Language"
-        value={language}
+        value={language ?? 'No language detected'}
         icon={<FaLanguage />}
       />
 
       <ResultCard
         title="Confidence"
-        value={`${(confidence * 100).toFixed(2)}%`}
+        value={confidence ? `${(confidence * 100).toFixed(2)}%` : 'No confidence score available'}
         icon={<FaSmile />}
       />
 
@@ -83,11 +82,15 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ data }) => {
       >
         <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Entities Detected 🏷️</h2>
         <ul className="space-y-2">
-          {entities.map((entity: any, index: number) => (
-            <li key={index} className="text-gray-800 dark:text-gray-200">
-              <strong>{entity.text}</strong> - {entity.type} (Start: {entity.start_char}, End: {entity.end_char})
-            </li>
-          ))}
+          {entities?.length > 0 ? (
+            entities.map((entity: any, index: number) => (
+              <li key={index} className="text-gray-800 dark:text-gray-200">
+                <strong>{entity.text}</strong> - {entity.type} (Start: {entity.start_char}, End: {entity.end_char})
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-800 dark:text-gray-200">No entities detected</li>
+          )}
         </ul>
       </motion.div>
       
@@ -99,17 +102,21 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ data }) => {
       >
         <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Keywords 🔑</h2>
         <ul className="space-y-2">
-          {keywords.map((keyword: any, index: number) => (
-            <li key={index} className="text-gray-800 dark:text-gray-200">
-              <FaKey className="inline-block text-yellow-500 mr-2" /> {keyword.word} - Importance: {keyword.importance}
-            </li>
-          ))}
+          {keywords?.length > 0 ? (
+            keywords.map((keyword: any, index: number) => (
+              <li key={index} className="text-gray-800 dark:text-gray-200">
+                <FaKey className="inline-block text-yellow-500 mr-2" /> {keyword.word} - Importance: {keyword.importance}
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-800 dark:text-gray-200">No keywords detected</li>
+          )}
         </ul>
       </motion.div>
 
       <ResultCard
         title="Sentiment Analysis"
-        value={`Polarity: ${sentiment.polarity}, Subjectivity: ${sentiment.subjectivity}`}
+        value={sentiment ? `Polarity: ${sentiment.polarity}, Subjectivity: ${sentiment.subjectivity}` : 'No sentiment analysis available'}
         icon={<FaBrain />}
       />
 
@@ -120,10 +127,9 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ data }) => {
         transition={{ delay: 0.9 }}
       >
         <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">Additional Information 🌍</h2>
-        <p className="text-gray-800 dark:text-gray-200">Language detected: {language}</p>
-        <p className="text-gray-800 dark:text-gray-200">Confidence level: {(confidence * 100).toFixed(2)}%</p>
+        <p className="text-gray-800 dark:text-gray-200">Language detected: {language ?? 'Unknown'}</p>
+        <p className="text-gray-800 dark:text-gray-200">Confidence level: {confidence ? `${(confidence * 100).toFixed(2)}%` : 'No confidence score available'}</p>
       </motion.div>
     </motion.div>
   );
 };
-
