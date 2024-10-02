@@ -5,6 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineFileText, AiOutlineLink, AiOutlineGlobal, AiOutlineBulb } from 'react-icons/ai';
+import api from '@/lib/axiosConfig';
+
+const RelationMappingResult = React.lazy(() => import('./RelationMappingResult'));
 
 const relationMappingSchema = z.object({
   topic: z.string().min(1, { message: 'Please enter the main topic 💡' }),
@@ -17,63 +20,34 @@ const relationMappingSchema = z.object({
 
 type RelationMappingInput = z.infer<typeof relationMappingSchema>;
 
-const RelationMappingResult = React.lazy(() => import('./RelationMappingResult'));
-
 const RelationMappingForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [relationMappingData, setRelationMappingData] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<RelationMappingInput>({
     resolver: zodResolver(relationMappingSchema),
   });
 
-  const relationMappingData = {
-    algorithm: 'manual',
-    entities: [
-      {
-        entity_id: 'entity_1',
-        entity_name: 'Large Language Models (LLMs)',
-        attributes: [
-          { attribute_name: 'type', attribute_type: 'string', is_primary_key: true, is_foreign_key: false, constraints: null },
-          { attribute_name: 'capabilities', attribute_type: 'array', is_primary_key: false, is_foreign_key: false, constraints: null },
-          { attribute_name: 'limitations', attribute_type: 'array', is_primary_key: false, is_foreign_key: false, constraints: null },
-          { attribute_name: 'applications', attribute_type: 'array', is_primary_key: false, is_foreign_key: false, constraints: null },
-        ],
-        description: 'A type of artificial intelligence designed to understand and generate human-like language.',
-        entity_type: 'AI Model',
-      },
-      {
-        entity_id: 'entity_2',
-        entity_name: 'Natural Language Processing (NLP)',
-        attributes: [
-          { attribute_name: 'field', attribute_type: 'string', is_primary_key: true, is_foreign_key: false, constraints: null },
-          { attribute_name: 'applications', attribute_type: 'array', is_primary_key: false, is_foreign_key: false, constraints: null },
-        ],
-        description: 'A field of AI that focuses on the interaction between computers and humans through natural language.',
-        entity_type: 'Field',
-      },
-    ],
-    relations: [
-      {
-        relation_id: 'relation_1',
-        source_entity: 'entity_1',
-        target_entity: 'entity_2',
-        relation_type: 'uses',
-        cardinality: { source_cardinality: 'one', target_cardinality: 'many', description: 'LLMs are used in various NLP applications.' },
-        constraints: null,
-        weight: null,
-        description: 'LLMs leverage NLP techniques to perform language-related tasks.',
-      },
-    ],
-    metadata: { num_entities: 2, num_relations: 1, method: 'manual', timestamp: null, mapping_algorithm: null },
-  };
-
-  const onSubmit = (data: RelationMappingInput) => {
+  const onSubmit = async (data: RelationMappingInput) => {
+    setShowResults(false);
     setLoading(true);
-    toast.success('Form successfully submitted 🎉');
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const response = await api.post('/relation-mapping', data);
+
+      toast.success("Form submitted successfully! 🎉", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+      });
+
+      setRelationMappingData(response.data); 
       setShowResults(true);
-    }, 2000);
+    } catch (error) {
+      toast.error('Failed to retrieve relation mapping data 🚫');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -166,12 +140,11 @@ const RelationMappingForm: React.FC = () => {
           </button>
         </form>
 
-        <ToastContainer position="top-center" autoClose={3000} />
+        <ToastContainer />
       </div>
 
-      {showResults && (
+      {showResults && relationMappingData && (
         <Suspense fallback={<div className="flex justify-center mt-8"><svg className="animate-spin h-10 w-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg></div>}>
-
           <div className='mt-10'>
             <RelationMappingResult data={relationMappingData} />
           </div>
