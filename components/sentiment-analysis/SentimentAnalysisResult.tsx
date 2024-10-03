@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaClock, FaLanguage, FaStar } from 'react-icons/fa';
+import { FaLanguage, FaStar } from 'react-icons/fa';
 
 type SentimentData = any;
 
@@ -14,10 +14,6 @@ export const SentimentResults: React.FC<SentimentResultsProps> = ({ data }) => {
       <p className="mb-3 text-lg text-gray-700 dark:text-gray-300">
         <FaLanguage className="inline mr-2" />
         Language: <strong>{data.language || 'Unknown'} 🌍</strong>
-      </p>
-      <p className="mb-3 text-lg text-gray-700 dark:text-gray-300">
-        <FaClock className="inline mr-2" />
-        Timestamp: <strong>{new Date(data.timestamp).toLocaleString() || 'N/A'} ⏰</strong>
       </p>
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Overall Sentiment</h3>

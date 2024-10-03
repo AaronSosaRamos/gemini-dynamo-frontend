@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaFileAlt, FaLanguage, FaLink, FaSpinner } from 'react-icons/fa';
 import { useState, Suspense } from 'react';
 import { SentimentResults } from './SentimentAnalysisResult';
+import api from '@/lib/axiosConfig';
 
 const inputDataSchema = z.object({
   topic: z.string().min(1, { message: 'Topic is required 📝' }),
@@ -38,26 +39,26 @@ export default function SentimentAnalysisForm() {
     resolver: zodResolver(inputDataSchema),
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
+    setResponseData(null)
     setIsSubmitting(true);
-    toast.success('📝 Form submitted successfully!');
 
-    setTimeout(() => {
-      const mockData = {
-        overall_sentiment: { sentiment: 'positive', score: 0.85 },
-        aspect_sentiments: [
-          { aspect: 'model quality', sentiment: 'positive', score: 0.9 },
-          { aspect: 'ease of use', sentiment: 'positive', score: 0.8 },
-          { aspect: 'response speed', sentiment: 'neutral', score: 0.5 },
-          { aspect: 'cost', sentiment: 'negative', score: 0.4 },
-        ],
-        timestamp: '2023-10-01T12:00:00Z',
-        language: 'es',
-      };
-      setResponseData(mockData);
+    try {
+      const response = await api.post('/sentiment-analysis', data);
+
+      toast.success("Form submitted successfully! 🎉", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+      });
+
+      setResponseData(response.data);
+    } catch (error) {
+      toast.error('Failed to retrieve sentiment analysis data 🚫');
+    } finally {
       setIsSubmitting(false);
       reset();
-    }, 2000);
+    }
   };
 
   return (
@@ -146,6 +147,8 @@ export default function SentimentAnalysisForm() {
           </button>
         </form>
       </div>
+
+      <ToastContainer />
 
       {responseData && (
         <Suspense fallback={<div>Loading results...</div>}>
